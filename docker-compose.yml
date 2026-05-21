@@ -6,6 +6,8 @@ services:
     image: nginx:alpine 
     container_name: zhdanov-pw
     restart: unless-stopped
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
     networks:
       - traefik_proxy # Подключаем контейнер к сети Traefik
     labels:
