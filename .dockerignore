@@ -1,0 +1,5 @@
+.git
+.gitignore
+nginx.conf
+README.md
+*.md

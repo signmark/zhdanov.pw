@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дмитрий Жданов — Senior System Architect & Fullstack Developer</title>
+  <meta name="description" content="Дмитрий Жданов — Senior System Architect & Fullstack Developer. 5+ лет опыта. Создаю масштабируемые системы, SaaS-продукты и автоматизирую сложные процессы с помощью AI." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'surface': '#111111',
+            'surface-2': '#1a1a1a',
+            'surface-3': '#222222',
+            'border': '#2a2a2a',
+            'border-2': '#333333',
+            'text-primary': '#f5f5f5',
+            'text-secondary': '#a1a1aa',
+            'text-muted': '#52525b',
+            'accent': '#00d9ff',
+            'accent-dim': 'rgba(0,217,255,0.1)',
+            'accent-2': '#8b5cf6',
+            'accent-2-dim': 'rgba(139,92,246,0.1)',
+            'green': '#22c55e',
+          },
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.6s ease forwards',
+            'fade-in': 'fadeIn 0.8s ease forwards',
+            'pulse-slow': 'pulse 3s ease-in-out infinite',
+            'gradient': 'gradient 8s ease infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            gradient: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #0a0a0a;
+      color: #f5f5f5;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00d9ff; }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* Grid background */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #00d9ff 0%, #8b5cf6 50%, #00d9ff 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient 6s ease infinite;
+    }
+
+    .gradient-text-subtle {
+      background: linear-gradient(135deg, #f5f5f5 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glow effect */
+    .glow {
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.15), 0 0 60px rgba(0, 217, 255, 0.05);
+    }
+    .glow-purple {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
+    }
+
+    /* Hero gradient blob */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    /* Nav */
+    nav {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10,10,10,0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Cards */
+    .card {
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,217,255,0.03) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 16px;
+    }
+    .card:hover::before { opacity: 1; }
+    .card:hover {
+      border-color: #2a2a2a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,217,255,0.05);
+    }
+
+    /* Tech pill */
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      color: #a1a1aa;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .tech-pill:hover {
+      background: rgba(0,217,255,0.08);
+      border-color: rgba(0,217,255,0.3);
+      color: #00d9ff;
+      transform: translateY(-1px);
+    }
+    .tech-pill.accent {
+      background: rgba(0,217,255,0.08);
+      border-color: rgba(0,217,255,0.2);
+      color: #00d9ff;
+    }
+    .tech-pill.purple {
+      background: rgba(139,92,246,0.08);
+      border-color: rgba(139,92,246,0.2);
+      color: #8b5cf6;
+    }
+    .tech-pill.green {
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.2);
+      color: #22c55e;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      background: #00d9ff;
+      color: #0a0a0a;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      background: #00c4e8;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0,217,255,0.3);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 15px;
+      background: transparent;
+      color: #f5f5f5;
+      border: 1px solid #2a2a2a;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      border-color: #3a3a3a;
+      background: #1a1a1a;
+      transform: translateY(-1px);
+    }
+
+    /* Section */
+    section { padding: 96px 0; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #00d9ff;
+      margin-bottom: 12px;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #2a2a2a, transparent);
+    }
+
+    /* Status dot */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.6);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Project card accent line */
+    .project-card-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    /* Mobile menu */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.5rem !important; line-height: 1.1 !important; }
+    }
+
+    /* Gradient border */
+    .gradient-border {
+      position: relative;
+      border-radius: 16px;
+    }
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(0,217,255,0.3), rgba(139,92,246,0.3), transparent);
+      z-index: -1;
+    }
+
+    /* Cursor blink */
+    .cursor-blink::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #00d9ff;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Timeline dot */
+    .timeline-item {
+      position: relative;
+      padding-left: 28px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00d9ff;
+      box-shadow: 0 0 8px rgba(0,217,255,0.5);
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 3.5px;
+      top: 18px;
+      width: 1px;
+      height: calc(100% + 8px);
+      background: linear-gradient(to bottom, #2a2a2a, transparent);
+    }
+    .timeline-item:last-child::after { display: none; }
+  </style>
+</head>
+
+<body class="grid-bg">
+
+<!-- ========== NAV ========== -->
+<nav class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="font-mono text-sm text-text-secondary hover:text-accent transition-colors">
+      <span class="text-accent">~/</span>architect
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#about" class="text-sm text-text-secondary hover:text-text-primary transition-colors">О себе</a>
+      <a href="#stack" class="text-sm text-text-secondary hover:text-text-primary transition-colors">Стек</a>
+      <a href="#projects" class="text-sm text-text-secondary hover:text-text-primary transition-colors">Проекты</a>
+      <a href="#connect" class="text-sm text-text-secondary hover:text-text-primary transition-colors">Контакты</a>
+    </div>
+    <a href="https://t.me/signmark" class="btn-primary text-sm py-2 px-5">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.59-.47.74-.95.46l-2.62-1.93-1.26 1.21c-.14.14-.26.26-.53.26l.19-2.72 4.98-4.5c.22-.19-.05-.3-.33-.11l-6.15 3.87-2.65-.82c-.57-.18-.58-.57.13-.84l10.35-3.99c.47-.17.89.12.74.09z"/></svg>
+      Написать
+    </a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="hero" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+  <!-- Blobs -->
+  <div class="blob w-96 h-96 bg-accent top-20 -right-20" style="animation-delay: 0s;"></div>
+  <div class="blob w-80 h-80 bg-accent-2 bottom-40 -left-20" style="animation-delay: 3s;"></div>
+  <div class="blob w-64 h-64 bg-accent top-1/2 left-1/2" style="animation-delay: 5s; opacity: 0.06;"></div>
+
+  <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
+    <div class="max-w-4xl">
+      <!-- Status badge -->
+      <div class="reveal inline-flex items-center gap-3 px-4 py-2 rounded-full border border-border bg-surface-2 text-sm text-text-secondary mb-10" style="transition-delay: 0.1s">
+        <span class="status-dot"></span>
+        Открыт к интересным проектам
+        <span class="text-text-muted mx-1">·</span>
+        <span class="font-mono text-xs text-text-muted">UTC+7</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="hero-title reveal font-bold leading-none mb-6" style="font-size: 4.5rem; transition-delay: 0.15s;">
+        <span class="gradient-text-subtle">Senior System</span><br />
+        <span class="gradient-text">Architect</span>
+        <span class="gradient-text-subtle"> &</span><br />
+        <span class="gradient-text-subtle">Fullstack </span><span style="color: #f5f5f5">Developer</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="reveal text-xl text-text-secondary leading-relaxed mb-4 max-w-2xl" style="transition-delay: 0.2s;">
+        Проектирую архитектуры, запускаю продукты с нуля и автоматизирую всё, что можно автоматизировать.<br/>
+        <span class="text-text-primary font-medium">5+ лет в IT</span> — от монолитов до микросервисов, от MVP до highload.
+      </p>
+
+      <p class="reveal text-base text-text-muted mb-10" style="font-family: 'JetBrains Mono', monospace; transition-delay: 0.25s;">
+        // Node.js · React · PostgreSQL · n8n · AI-workflows · Web3
+      </p>
+
+      <!-- CTA -->
+      <div class="reveal flex flex-wrap items-center gap-4" style="transition-delay: 0.3s;">
+        <a href="https://t.me/signmark" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.59-.47.74-.95.46l-2.62-1.93-1.26 1.21c-.14.14-.26.26-.53.26l.19-2.72 4.98-4.5c.22-.19-.05-.3-.33-.11l-6.15 3.87-2.65-.82c-.57-.18-.58-.57.13-.84l10.35-3.99c.47-.17.89.12.74.09z"/></svg>
+          Написать в Telegram
+        </a>
+        <a href="https://www.linkedin.com/in/dsignmark/" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/signmark/" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
+    <span class="text-xs font-mono text-text-muted">scroll</span>
+    <div class="w-px h-10 bg-gradient-to-b from-border to-transparent animate-pulse"></div>
+  </div>
+</section>
+
+<div class="divider max-w-6xl mx-auto"></div>
+
+<!-- ========== ABOUT ========== -->
+<section id="about">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-start">
+
+      <!-- Left: Bio -->
+      <div>
+        <p class="section-label reveal">01 — О себе</p>
+        <h2 class="text-4xl font-bold mb-6 reveal leading-tight">
+          Не просто пишу код —<br/>
+          <span class="gradient-text">строю продукты</span>
+        </h2>
+
+        <div class="space-y-4 text-text-secondary leading-relaxed">
+          <p class="reveal">
+            Я проектирую системы, которые решают реальные задачи бизнеса: от проработки архитектуры и выбора технологического стека до запуска в прод и поддержки под нагрузкой.
+          </p>
+          <p class="reveal">
+            За <span class="text-text-primary font-medium">5+ лет</span> прошёл путь от фронтенда до системной архитектуры. Участвовал в запуске нескольких продуктов с нуля — P2P-маркетплейсы, SaaS-сервисы, инструменты автоматизации.
+          </p>
+          <p class="reveal">
+            Сейчас активно использую <span class="text-accent font-medium">AI-assisted подход к разработке</span> — что я называю «Vibe Coding»: не замена кода AI-ом, а новый уровень итераций, где архитектор задаёт направление, а AI ускоряет исполнение.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Philosophy cards -->
+      <div class="space-y-4">
+        <p class="section-label reveal">Философия работы</p>
+
+        <div class="card p-5 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0" style="background: rgba(0,217,255,0.1);">⚡</div>
+            <div>
+              <h3 class="font-semibold text-text-primary mb-1">Vibe Coding</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">Проектирую архитектуру руками, а итерации ускоряю с помощью Claude, Gemini, Cursor. Скорость разработки — это конкурентное преимущество.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0" style="background: rgba(139,92,246,0.1);">🏗️</div>
+            <div>
+              <h3 class="font-semibold text-text-primary mb-1">Architecture First</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">Правильно спроектированная система дешевле поддерживать и проще масштабировать. Я думаю о завтра уже сегодня.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0" style="background: rgba(34,197,94,0.1);">🤖</div>
+            <div>
+              <h3 class="font-semibold text-text-primary mb-1">Автоматизация как стандарт</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">n8n, Directus, webhooks, pipelines — всё, что можно автоматизировать, должно быть автоматизировано. Человеческое время слишком ценно.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-5 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0" style="background: rgba(251,146,60,0.1);">🔭</div>
+            <div>
+              <h3 class="font-semibold text-text-primary mb-1">На стыке технологий</h3>
+              <p class="text-sm text-text-secondary leading-relaxed">Интересуюсь AI-агентами, цифровыми двойниками (Omemo), P2P-механиками и автоматизацией маркетинга. Технологии меняют правила игры — я хочу быть в числе тех, кто их задаёт.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider max-w-6xl mx-auto"></div>
+
+<!-- ========== TECH STACK ========== -->
+<section id="stack">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="section-label reveal">02 — Технологический стек</p>
+      <h2 class="text-4xl font-bold reveal">
+        Инструменты, которым <span class="gradient-text">доверяю</span>
+      </h2>
+      <p class="text-text-secondary mt-4 max-w-xl mx-auto reveal">
+        Выбираю технологии под задачу, а не под тренды. Каждый инструмент здесь — это десятки часов реального боевого опыта.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- Architecture & Backend -->
+      <div class="card p-6 reveal gradient-border">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(0,217,255,0.1);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#00d9ff"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="font-semibold text-text-primary">Architecture & Backend</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tech-pill accent">Node.js</span>
+          <span class="tech-pill accent">PostgreSQL</span>
+          <span class="tech-pill">REST API</span>
+          <span class="tech-pill">GraphQL</span>
+          <span class="tech-pill">Microservices</span>
+          <span class="tech-pill">Docker</span>
+          <span class="tech-pill">Redis</span>
+          <span class="tech-pill">Nginx</span>
+          <span class="tech-pill">Event-Driven</span>
+          <span class="tech-pill">DDD</span>
+          <span class="tech-pill">CQRS</span>
+          <span class="tech-pill">CI/CD</span>
+        </div>
+      </div>
+
+      <!-- Frontend -->
+      <div class="card p-6 reveal">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(139,92,246,0.1);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#8b5cf6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          </div>
+          <h3 class="font-semibold text-text-primary">Frontend</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tech-pill purple">React</span>
+          <span class="tech-pill purple">Next.js</span>
+          <span class="tech-pill purple">TypeScript</span>
+          <span class="tech-pill">Tailwind CSS</span>
+          <span class="tech-pill">Zustand</span>
+          <span class="tech-pill">React Query</span>
+          <span class="tech-pill">Vite</span>
+          <span class="tech-pill">Framer Motion</span>
+          <span class="tech-pill">SSR / SSG</span>
+        </div>
+      </div>
+
+      <!-- Automation & AI -->
+      <div class="card p-6 reveal">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(34,197,94,0.1);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#22c55e"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <h3 class="font-semibold text-text-primary">Automation & AI</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tech-pill green">n8n</span>
+          <span class="tech-pill green">Directus</span>
+          <span class="tech-pill green">Claude API</span>
+          <span class="tech-pill green">Gemini API</span>
+          <span class="tech-pill">OpenAI API</span>
+          <span class="tech-pill">Cursor</span>
+          <span class="tech-pill">LangChain</span>
+          <span class="tech-pill">Webhooks</span>
+          <span class="tech-pill">AI Agents</span>
+          <span class="tech-pill">Prompt Engineering</span>
+        </div>
+      </div>
+
+      <!-- Web3 / Crypto -->
+      <div class="card p-6 reveal">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(251,191,36,0.1);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+          </div>
+          <h3 class="font-semibold text-text-primary">Web3 / Crypto</h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tech-pill" style="border-color: rgba(251,191,36,0.2); color: #fbbf24; background: rgba(251,191,36,0.08);">Binance API</span>
+          <span class="tech-pill">P2P механики</span>
+          <span class="tech-pill">Crypto payments</span>
+          <span class="tech-pill">Web3.js</span>
+          <span class="tech-pill">Smart Contracts</span>
+          <span class="tech-pill">DeFi протоколы</span>
+          <span class="tech-pill">KYC/AML flows</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider max-w-6xl mx-auto"></div>
+
+<!-- ========== PROJECTS ========== -->
+<section id="projects">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="section-label reveal">03 — Проекты</p>
+      <h2 class="text-4xl font-bold reveal">
+        Что я <span class="gradient-text">строю</span>
+      </h2>
+      <p class="text-text-secondary mt-4 max-w-xl mx-auto reveal">
+        Ключевые направления без лишних деталей. NDA — это NDA, но архитектурой поделюсь.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- Project 1 -->
+      <div class="card p-7 reveal flex flex-col" style="transition-delay: 0.1s;">
+        <div class="project-card-accent bg-gradient-to-r from-accent to-transparent"></div>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-6" style="background: rgba(0,217,255,0.1);">🤖</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-3">
+            <h3 class="font-bold text-lg text-text-primary">SaaS для автоматизации SMM</h3>
+          </div>
+          <p class="text-text-secondary text-sm leading-relaxed mb-5">
+            Платформа для автоматической генерации, планирования и публикации контента. Интеграция с AI-моделями для создания постов, n8n для оркестрации воркфлоу, Directus как headless CMS/BaaS.
+          </p>
+          <div class="space-y-2 mb-6">
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Автогенерация контента через Claude/GPT</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Multi-account управление соцсетями</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Аналитика и A/B тестирование постов</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-border">
+          <span class="tech-pill text-xs py-1 px-3">n8n</span>
+          <span class="tech-pill text-xs py-1 px-3">Directus</span>
+          <span class="tech-pill text-xs py-1 px-3">Node.js</span>
+          <span class="tech-pill text-xs py-1 px-3">Claude API</span>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="card p-7 reveal flex flex-col" style="transition-delay: 0.2s;">
+        <div class="project-card-accent bg-gradient-to-r from-accent-2 to-transparent"></div>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-6" style="background: rgba(139,92,246,0.1);">🏍️</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-3">
+            <h3 class="font-bold text-lg text-text-primary">P2P Marketplace аренды</h3>
+          </div>
+          <p class="text-text-secondary text-sm leading-relaxed mb-5">
+            Высоконагруженный маркетплейс для аренды транспорта между физлицами. Полный цикл: от архитектуры и CRUD до системы верификации, управления депозитами и работы с нагрузкой.
+          </p>
+          <div class="space-y-2 mb-6">
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Система бронирования с real-time обновлениями</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">KYC верификация и управление депозитами</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Рейтинговая система и разрешение споров</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-border">
+          <span class="tech-pill text-xs py-1 px-3">PostgreSQL</span>
+          <span class="tech-pill text-xs py-1 px-3">Next.js</span>
+          <span class="tech-pill text-xs py-1 px-3">WebSocket</span>
+          <span class="tech-pill text-xs py-1 px-3">Redis</span>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="card p-7 reveal flex flex-col" style="transition-delay: 0.3s;">
+        <div class="project-card-accent bg-gradient-to-r from-green to-transparent"></div>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-6" style="background: rgba(34,197,94,0.1);">🧬</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-3">
+            <h3 class="font-bold text-lg text-text-primary">AI-эксперименты: Omemo</h3>
+          </div>
+          <p class="text-text-secondary text-sm leading-relaxed mb-5">
+            Исследовательский проект в области цифровых двойников и «цифрового бессмертия». Персональные AI-ассистенты, обученные на личных данных, для сохранения памяти и стиля мышления человека.
+          </p>
+          <div class="space-y-2 mb-6">
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Fine-tuning на персональных данных</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">RAG-архитектура для долгосрочной памяти</p>
+            </div>
+            <div class="timeline-item pb-3">
+              <p class="text-xs text-text-muted">Мультимодальные AI-копии (текст, голос)</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-border">
+          <span class="tech-pill text-xs py-1 px-3">LangChain</span>
+          <span class="tech-pill text-xs py-1 px-3">RAG</span>
+          <span class="tech-pill text-xs py-1 px-3">Fine-tuning</span>
+          <span class="tech-pill text-xs py-1 px-3">Gemini</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open to collab note -->
+    <div class="mt-10 reveal">
+      <div class="card p-6 flex flex-col md:flex-row items-center gap-6 text-center md:text-left" style="background: linear-gradient(135deg, rgba(0,217,255,0.04), rgba(139,92,246,0.04));">
+        <div class="text-3xl flex-shrink-0">💡</div>
+        <div>
+          <h4 class="font-semibold text-text-primary mb-1">Работаю под NDA — часть кейсов не могу раскрыть публично</h4>
+          <p class="text-sm text-text-secondary">Но в личном разговоре готов рассказать об архитектурных решениях и технических вызовах. Напишите — обсудим.</p>
+        </div>
+        <a href="https://t.me/your_username" class="btn-secondary flex-shrink-0">
+          Обсудить детали →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider max-w-6xl mx-auto"></div>
+
+<!-- ========== CONNECT ========== -->
+<section id="connect" class="relative overflow-hidden">
+  <!-- Background glow -->
+  <div class="blob w-96 h-96 bg-accent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style="opacity: 0.07;"></div>
+
+  <div class="max-w-6xl mx-auto px-6 relative z-10">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="section-label reveal">04 — Контакты</p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 reveal leading-tight">
+        Давай построим<br/>
+        что-то <span class="gradient-text">крутое</span>
+      </h2>
+      <p class="text-text-secondary text-lg leading-relaxed mb-10 reveal">
+        Интересный проект, архитектурная задача, стартап в поисках техлида, обмен опытом — я открыт к разговору. Можно просто написать «привет» и рассказать, чем занимаешься.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <a href="https://t.me/signmark" class="btn-primary w-full sm:w-auto justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.59-.47.74-.95.46l-2.62-1.93-1.26 1.21c-.14.14-.26.26-.53.26l.19-2.72 4.98-4.5c.22-.19-.05-.3-.33-.11l-6.15 3.87-2.65-.82c-.57-.18-.58-.57.13-.84l10.35-3.99c.47-.17.89.12.74.09z"/></svg>
+          Telegram — @signmark
+        </a>
+        <a href="mailto:dmitry@zhdanow.pw" class="btn-secondary w-full sm:w-auto justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          dmitry@zhdanow.pw
+        </a>
+      </div>
+
+      <!-- Social links row -->
+      <div class="reveal flex items-center justify-center gap-6 pb-4">
+        <a href="https://github.com/signmark/" class="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <span class="text-border">·</span>
+        <a href="https://www.linkedin.com/in/dsignmark/" class="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <span class="text-border">·</span>
+        <a href="https://t.me/signmark" class="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.59-.47.74-.95.46l-2.62-1.93-1.26 1.21c-.14.14-.26.26-.53.26l.19-2.72 4.98-4.5c.22-.19-.05-.3-.33-.11l-6.15 3.87-2.65-.82c-.57-.18-.58-.57.13-.84l10.35-3.99c.47-.17.89.12.74.09z"/></svg>
+          Telegram
+        </a>
+        <span class="text-border">·</span>
+        <a href="https://instagram.com/it.zhdanov" class="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer style="border-top: 1px solid #1a1a1a; padding: 32px 0;">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <span class="font-mono text-sm text-text-muted">
+      <span class="text-accent">~/</span>architect <span class="text-border mx-2">—</span> Senior System Architect & Fullstack Developer
+    </span>
+    <span class="font-mono text-xs text-text-muted">
+      Built with ☕ + AI · Dmitry Zhdanov · 2025
+    </span>
+  </div>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, (entry.target.dataset.delay || 0));
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Trigger hero reveals immediately
+  setTimeout(() => {
+    document.querySelectorAll('#hero .reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 80);
+    });
+  }, 100);
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      if (window.scrollY >= section.offsetTop - 200) {
+        current = section.id;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('text-accent');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('text-accent');
+      }
+    });
+  });
+
+  // Tech pill hover sound feedback (subtle scale)
+  document.querySelectorAll('.tech-pill').forEach(pill => {
+    pill.addEventListener('mouseenter', () => {
+      pill.style.transform = 'translateY(-2px) scale(1.02)';
+    });
+    pill.addEventListener('mouseleave', () => {
+      pill.style.transform = '';
+    });
+  });
+
+  // Parallax blob effect
+  document.addEventListener('mousemove', (e) => {
+    const blobs = document.querySelectorAll('.blob');
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    blobs.forEach((blob, i) => {
+      const factor = (i + 1) * 0.3;
+      blob.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+    });
+  });
+</script>
+
+</body>
+</html>

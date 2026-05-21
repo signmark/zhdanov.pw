@@ -1,0 +1,27 @@
+zhdanov.pw, www.zhdanov.pw {
+    # Автоматический редирект www → без www
+    @www host www.zhdanov.pw
+    redir @www https://zhdanov.pw{uri} permanent
+
+    root * /srv
+
+    # Gzip сжатие
+    encode gzip
+
+    # Статические файлы
+    file_server
+
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        X-XSS-Protection "1; mode=block"
+    }
+
+    # Логи
+    log {
+        output stdout
+        format console
+    }
+}
