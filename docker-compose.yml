@@ -2,27 +2,25 @@ version: '3.8'
 
 services:
   zhdanov-pw:
-    build: .
+    build: . # Собирает Dockerfile, лежащий рядом
     container_name: zhdanov-pw
     restart: unless-stopped
     networks:
       - traefik_proxy
     labels:
       - "traefik.enable=true"
-      
-      # HTTP роутер (авторедирект на HTTPS, если не настроен глобально в Traefik)
+      # Настройка для HTTP (с редиректом на HTTPS)
       - "traefik.http.routers.zhdanov-http.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-http.entrypoints=web"
       - "traefik.http.routers.zhdanov-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-
-      # HTTPS роутер
+      # Настройка для HTTPS
       - "traefik.http.routers.zhdanov-https.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-https.entrypoints=websecure"
       - "traefik.http.routers.zhdanov-https.tls=true"
-      - "traefik.http.routers.zhdanov-https.tls.certresolver=myresolver"
+      - "traefik.http.routers.zhdanov-https.tls.certresolver=myresolver" # Привязали к правильному роутеру
       
-      # Внутренний порт контейнера Nginx
+      # Порт контейнера Nginx
       - "traefik.http.services.zhdanov-svc.loadbalancer.server.port=80"
 
 networks:
