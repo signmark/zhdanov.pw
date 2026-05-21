@@ -1,10 +1,9 @@
-FROM caddy:2-alpine
+FROM nginx:alpine
 
-# Конфиг Caddy
-COPY Caddyfile /etc/caddy/Caddyfile
+# Копируем наш кастомный конфиг Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Статика сайта
-COPY index.html /srv/index.html
+# Копируем файл лендинга
+COPY index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
-EXPOSE 443

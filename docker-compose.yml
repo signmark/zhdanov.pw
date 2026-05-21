@@ -2,27 +2,30 @@ version: '3.8'
 
 services:
   zhdanov-pw:
-    # Укажи свой образ (например, nginx:alpine, caddy, или сборку твоего приложения)
-    image: nginx:alpine 
+    build: .
     container_name: zhdanov-pw
     restart: unless-stopped
-    volumes:
-      - ./dist:/usr/share/nginx/html:ro
     networks:
-      - traefik_proxy # Подключаем контейнер к сети Traefik
+      - traefik_proxy
     labels:
       - "traefik.enable=true"
-      # Настройка для HTTP
+      
+      # HTTP роутер (авторедирект на HTTPS, если не настроен глобально в Traefik)
       - "traefik.http.routers.zhdanov-http.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-http.entrypoints=web"
-      # Настройка для HTTPS
+      - "traefik.http.routers.zhdanov-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+      # HTTPS роутер
       - "traefik.http.routers.zhdanov-https.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-https.entrypoints=websecure"
       - "traefik.http.routers.zhdanov-https.tls=true"
-      # Порт, который веб-сервер слушает внутри контейнера (80 для nginx/caddy по дефолту)
+      - "traefik.http.routers.zhdanov-https.tls.certresolver=myresolver"
+      
+      # Внутренний порт контейнера Nginx
       - "traefik.http.services.zhdanov-svc.loadbalancer.server.port=80"
 
 networks:
   traefik_proxy:
-    name: proxy # Указываем реальное имя сети в Docker, которую мы только что нашли
-    external: true # Говорим, что сеть уже создана внешним стеком Traefik
+    name: proxy
+    external: true
