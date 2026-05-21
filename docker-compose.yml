@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.zhdanov-https.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-https.entrypoints=websecure"
       - "traefik.http.routers.zhdanov-https.tls=true"
-      - "traefik.http.routers.zhdanov-https.tls.certresolver=myresolver" # Привязали к правильному роутеру
+      - "traefik.http.routers.zhdanov-https.tls.certresolver=mytlschallenge" # Привязали к правильному роутеру
       
       # Порт контейнера Nginx
       - "traefik.http.services.zhdanov-svc.loadbalancer.server.port=80"
