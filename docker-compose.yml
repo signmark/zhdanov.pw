@@ -10,12 +10,12 @@ services:
     labels:
       - "traefik.enable=true"
       # Настройка для HTTP (с редиректом на HTTPS)
-      - "traefik.http.routers.zhdanov-http.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
+      - "traefik.http.routers.zhdanov-http.rule=Host(`zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-http.entrypoints=web"
       - "traefik.http.routers.zhdanov-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       # Настройка для HTTPS
-      - "traefik.http.routers.zhdanov-https.rule=Host(`zhdanov.pw`) || Host(`www.zhdanov.pw`)"
+      - "traefik.http.routers.zhdanov-https.rule=Host(`zhdanov.pw`)"
       - "traefik.http.routers.zhdanov-https.entrypoints=websecure"
       - "traefik.http.routers.zhdanov-https.tls=true"
       - "traefik.http.routers.zhdanov-https.tls.certresolver=mytlschallenge" # Привязали к правильному роутеру
