@@ -9,3 +9,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Личные заметки: репозиторий публичный, эти файлы наружу не идут
+NOTES.private.md
