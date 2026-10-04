@@ -22,10 +22,16 @@ expect() { # описание, ожидание, фактическое
 }
 code() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
 
+# Порт для проверки задаётся здесь и подставляется дальше в sed, в B и в
+# проверку занятости. Держать его в трёх местах нельзя: поменяли один, а
+# проверка продолжила мерить чужой сервер — ровно тот случай, ради которого
+# написан блок занятости ниже.
+PORT=8080
+
 rm -rf "$TMP"; mkdir -p "$TMP/conf.d" "$TMP/logs" "$TMP/body" "$TMP/proxy" \
   "$TMP/fastcgi" "$TMP/uwsgi" "$TMP/scgi"
-sed -e 's/listen 80;/listen 8080;/' \
-    -e 's/listen \[::\]:80;/listen [::]:8080;/' \
+sed -e "s/listen 80;/listen $PORT;/" \
+    -e "s/listen \[::\]:80;/listen [::]:$PORT;/" \
     -e "s#root /usr/share/nginx/html;#root $ROOT;#" \
     "$ROOT/nginx.conf" > "$CONF"
 
@@ -57,10 +63,31 @@ case "$out" in
   *) ok "nginx -t: без предупреждений" ;;
 esac
 
+# Порт занят — это не «проверка провалилась», а проверка не проверяла ничего.
+# nginx не может занять порт, падает с [emerg] bind(), а все curl ниже уходят
+# на чужой процесс: тот отвечает 200 на / и 404 на всё остальное, и проверка
+# выдаёт девять правдоподобных, но ложных провалов на целом сайте. Именно так
+# выглядела неудача на 8080, пока там висел nginx от проверки t16.
+B=http://127.0.0.1:$PORT
+if command -v ss >/dev/null 2>&1 && ss -ltn 2>/dev/null | grep -q ":$PORT "; then
+  echo "ПОРТ $PORT ЗАНЯТ — проверка не запущена."
+  echo "Кто слушает:"
+  ss -ltnp 2>/dev/null | grep ":$PORT " || true
+  echo "Освободите порт (например, погасите оставшийся nginx) и запустите снова."
+  exit 1
+fi
+
 nginx -c "$TMP/nginx.conf" 2>/dev/null
+# nginx -t проверяет конфиг, а не то, поднялся ли процесс: признак here —
+# pid-файл. Страховка на случай, когда порт заняли между проверкой и стартом.
+sleep 1
+if [ ! -f "$TMP/nginx.pid" ]; then
+  echo "nginx не поднялся (порт $PORT занят?) — проверка не запущена."
+  tail -n 3 "$TMP/logs/error.log" 2>/dev/null || true
+  exit 1
+fi
 trap 'nginx -c "$TMP/nginx.conf" -s quit 2>/dev/null' EXIT
 sleep 1
-B=http://127.0.0.1:8080
 
 # --- то, ради чего всё затевалось ---
 expect "несуществующий адрес -> 404" "404" "$(code "$B/nope-does-not-exist")"
