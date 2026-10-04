@@ -59,14 +59,16 @@ npm run build:ru     # node scripts/build-ru.mjs — index.html + i18n/ru.json -
 ## 🛠 Сборка и проверки
 
 ```bash
-npm run build        # русская страница + статический CSS
+npm run build        # русская страница + статический CSS + метка версии CSS
+npm run build:stamp  # только метка версии CSS (node scripts/stamp-css.mjs)
 npm run build:css    # только CSS (Tailwind CLI -> assets/site.css)
 npm run build:ru     # только русская страница
 
 node scripts/check-seo.mjs      # сторож: canonical, hreflang, og:image,
                                 # русский текст в разметке, sitemap, robots
                                 # и живая проверка nginx (настоящий 404)
-python3 scripts/mutations-t17.py  # пять порч: сторож обязан краснеть
+python3 scripts/mutations-t17.py  # семь порч #17: сторож обязан краснеть
+python3 scripts/mutations-t23.py  # шесть порч #23: редирект и метка CSS
 ```
 
 Стили собираются Tailwind CLI в `assets/site.css` (11 КБ) вместо
@@ -79,6 +81,17 @@ python3 scripts/mutations-t17.py  # пять порч: сторож обязан
 В корне лежит `googlef135278a92d1749a.html` — подтверждение прав на сайт в
 Google Search Console. Он должен быть и в репозитории, и в `COPY` в
 `Dockerfile`: на бою его клали руками, и пересборка контейнера его сносила.
+
+## Метка версии CSS
+
+`/assets/site.css` отдаётся с `expires 30d`, поэтому ссылка на стиль должна
+меняться вместе с файлом. Метку ставит `scripts/stamp-css.mjs`: это первые
+8 символов sha256 от `assets/site.css`, она входит в `npm run build`.
+
+Номер версии вручную не ставим: он разъезжается с файлом, и узнать, что метка
+устарела, можно только посмотрев на хэш. `check-seo.mjs` сверяет метку в
+разметке с хэшем файла и краснеет, если CSS поправили, а страницы
+перегенерировать забыли.
 
 ## 🚀 Деплой одной командой
 
