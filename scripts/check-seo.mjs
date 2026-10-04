@@ -14,6 +14,7 @@
  *    страницы. Прежний откат на главную отдавал 200 — «мягкая 404».
  */
 import { readFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -156,6 +157,28 @@ if (existsSync(join(ROOT, 'sitemap.xml'))) {
   if (readFileSync(join(ROOT, 'sitemap.xml'), 'utf8').includes(VERIFY)) bad('файл подтверждения попал в sitemap.xml');
 }
 
+// --- task #23: метка версии у CSS ---
+// nginx отдаёт CSS с `expires 30d`, поэтому ссылка обязана меняться вместе с
+// файлом. Метка — хэш содержимого; если он разошёлся с файлом, значит CSS
+// обновили, а страницы перегенерировать забыли: месяц старых стилей у всех,
+// кто бывал на сайте.
+const CSS_FILE = join(ROOT, 'assets/site.css');
+if (!existsSync(CSS_FILE)) {
+  bad('assets/site.css нет — собрать нечего, а страницы на него ссылаются');
+} else {
+  const want = createHash('sha256').update(readFileSync(CSS_FILE)).digest('hex').slice(0, 8);
+  for (const [file] of PAGES) {
+    const f = join(ROOT, file);
+    if (!existsSync(f)) continue;
+    const html = readFileSync(f, 'utf8');
+    if (!html.includes('/assets/site.css')) continue; // 404.html стилей не грузит
+    const m = html.match(/href="\/assets\/site\.css(\?v=([0-9a-f]+))?"/);
+    if (!m) { bad(`${file}: ссылка на CSS без метки версии — правка стилей не дойдёт месяц`); continue; }
+    if (m[2] === undefined) bad(`${file}: ссылка на CSS без метки версии — стиль закешируется на 30 дней`);
+    else if (m[2] !== want) bad(`${file}: метка CSS ${m[2]}, а файл даёт ${want} — запусти npm run build:stamp, страницы отдадут старый CSS`);
+  }
+}
+
 // --- живая проверка nginx: 404, 301 и 200 ---
 let live = 'пропущена (нет nginx или curl)';
 if (existsSync('/usr/sbin/nginx') || existsSync('/usr/local/sbin/nginx')) {
@@ -167,4 +190,4 @@ if (existsSync('/usr/sbin/nginx') || existsSync('/usr/local/sbin/nginx')) {
 }
 
 if (errors.length) { console.error(errors.map((e) => 'FAIL ' + e).join('\n')); process.exit(1); }
-console.log(`OK: ${PAGES.length} страницы — canonical, hreflang, og:image; русский текст в разметке; sitemap и robots; nginx: ${live}`);
+console.log(`OK: ${PAGES.length} страницы — canonical, hreflang, og:image; русский текст в разметке; метка CSS; sitemap и robots; nginx: ${live}`);

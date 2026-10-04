@@ -81,17 +81,42 @@ expect "/ -> 200" "200" "$(code "$B/")"
 expect "/ru/ -> 200" "200" "$(code "$B/ru/")"
 expect "старый /?lang=ru -> 301" "301" "$(code "$B/?lang=ru")"
 loc=$(curl -s -o /dev/null -D - "$B/?lang=ru" | tr -d '\r' | awk -F': ' 'tolower($1)=="location"{print $2}')
-# nginx отдаёт абсолютный Location (в бою за это отвечает прокси), поэтому
-# проверяем путь, а не весь заголовок.
+# task #23: с absolute_redirect off Location — это путь, а не абсолютный
+# адрес. Раньше проверка принимала «http://имя/ru/», и за прокси с https
+# браузер уходил на http: сайт без шифрования на один переход.
 case "${loc:-}" in
-  */ru/) ok "редирект ведёт на /ru/" ;;
-  *) no "редирект ведёт на /ru/" "Location: ${loc:-нет}" ;;
+  /ru/) ok "редирект ведёт на /ru/ путём, а не абсолютным адресом" ;;
+  http://*|https://*) no "редирект ведёт на /ru/ путём" "Location абсолютный: ${loc} — верни absolute_redirect off" ;;
+  *) no "редирект ведёт на /ru/ путём" "Location: ${loc:-нет}" ;;
+esac
+# и сам конфиг: без директивы проверка выше не могла бы стать зелёной
+if grep -q '^\s*absolute_redirect off;' "$ROOT/nginx.conf"; then
+  ok "в nginx.conf есть absolute_redirect off"
+else
+  no "в nginx.conf есть absolute_redirect off" "директивы нет — Location снова станет абсолютным"
+fi
+# CSS с меткой версии: без метки правка стилей не дойдёт 30 дней
+v=$(curl -s -o /dev/null -D - "$B/assets/site.css?v=test" | tr -d '\r' | awk -F': ' 'tolower($1)=="cache-control"{print $2}')
+case "$v" in
+  *max-age=2592000*) ok "CSS всё ещё кэшируется на 30 дней — метка версии обязательна" ;;
+  *) no "CSS кэшируется на 30 дней" "Cache-Control: ${v:-нет}" ;;
 esac
 expect "русская страница отдаётся на русском" "Дмитрий Жданов" \
   "$(curl -s "$B/ru/" | grep -o 'Дмитрий Жданов' | head -1)"
 expect "русская страница: canonical на /ru/" "https://zhdanov.pw/ru/" \
   "$(curl -s "$B/ru/" | grep -o '<link rel="canonical" href="[^"]*"' | sed 's/.*href="//;s/"//')"
 expect "CSS отдаётся и сжат" "200" "$(code "$B/assets/site.css")"
+want=$(sha256sum "$ROOT/assets/site.css" | cut -c1-8)
+for f in index.html ru/index.html; do
+  got=$(grep -o 'href="/assets/site.css?v=[0-9a-f]*"' "$ROOT/$f" | head -1 | sed 's/.*v=//;s/"$//')
+  if [ "$got" = "$want" ]; then ok "метка CSS в $f совпадает с файлом ($want)"; else no "метка CSS в $f" "метка ${got:-нет}, файл даёт $want"; fi
+done
+# старая метка после правки CSS обязана переставать совпадать: иначе браузер
+# месяц показывает прежние стили
+sed -i '1i /* t23 */' "$ROOT/assets/site.css"
+stale=$(grep -o 'href="/assets/site.css?v=[0-9a-f]*"' "$ROOT/index.html" | sed 's/.*v=//;s/"$//')
+sed -i '1d' "$ROOT/assets/site.css"
+if [ "$stale" = "$want" ]; then ok "правка CSS меняет метку (иначе кэш месяц)"; else no "правка CSS меняет метку" "метка не поменялась: $stale"; fi
 enc=$(curl -s -o /dev/null -D - -H 'Accept-Encoding: gzip' "$B/assets/site.css" | tr -d '\r' | awk -F': ' 'tolower($1)=="content-encoding"{print $2}')
 expect "CSS жмётся gzip" "gzip" "${enc:-нет}"
 expect "og:image отдаётся" "200" "$(code "$B/assets/og.png")"

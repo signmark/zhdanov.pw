@@ -2,11 +2,12 @@
   "name": "zhdanov-pw",
   "version": "1.0.0",
   "private": true,
-  "description": "Сборка статического CSS Tailwind и статической русской версии страницы",
+  "description": "Сборка статического CSS Tailwind, статической русской версии страницы и метки версии CSS",
   "scripts": {
     "build:css": "tailwindcss -c tailwind.config.js -i tailwind.input.css -o assets/site.css --minify",
     "build:ru": "node scripts/build-ru.mjs",
-    "build": "npm run build:ru && npm run build:css"
+    "build": "npm run build:ru && npm run build:css && npm run build:stamp",
+    "build:stamp": "node scripts/stamp-css.mjs"
   },
   "devDependencies": {
     "tailwindcss": "3.4.17"
