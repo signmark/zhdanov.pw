@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# zhdanov.pw, task #17: живая проверка nginx.conf.
+#
+# Поднимает настоящий nginx на 8080 с корнем из репозитория и проверяет
+# то, что нельзя увидеть в исходниках: какой код и какая страница реально
+# приходят по адресам. Главное здесь — настоящий 404 на несуществующий адрес
+# вместо прежнего отката на главную.
+#
+# Отличия от боевого конфига (только ради локального прогона):
+#   listen 80 -> 8080 (без root порт <1024 не занять),
+#   root /usr/share/nginx/html -> корень репозитория.
+# Все проверяемые директивы — как в бою.
+set -u
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+TMP=/tmp/ngx-t17
+CONF=$TMP/conf.d/default.conf
+fail=0
+ok()   { printf '  %-44s %s\n' "$1" "OK"; }
+no()   { printf '  %-44s FAIL %s\n' "$1" "$2"; fail=1; }
+expect() { # описание, ожидание, фактическое
+  if [ "$2" = "$3" ]; then ok "$1"; else no "$1" "ждали «$2», получили «$3»"; fi
+}
+code() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
+
+rm -rf "$TMP"; mkdir -p "$TMP/conf.d" "$TMP/logs" "$TMP/body" "$TMP/proxy" \
+  "$TMP/fastcgi" "$TMP/uwsgi" "$TMP/scgi"
+sed -e 's/listen 80;/listen 8080;/' \
+    -e 's/listen \[::\]:80;/listen [::]:8080;/' \
+    -e "s#root /usr/share/nginx/html;#root $ROOT;#" \
+    "$ROOT/nginx.conf" > "$CONF"
+
+cat > "$TMP/nginx.conf" <<EOF
+worker_processes 1;
+error_log $TMP/logs/error.log;
+pid $TMP/nginx.pid;
+events { worker_connections 64; }
+http {
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
+  access_log $TMP/logs/access.log;
+  client_body_temp_path $TMP/body;
+  proxy_temp_path $TMP/proxy;
+  fastcgi_temp_path $TMP/fastcgi;
+  uwsgi_temp_path $TMP/uwsgi;
+  scgi_temp_path $TMP/scgi;
+  include $TMP/conf.d/*.conf;
+}
+EOF
+
+out=$(nginx -t -c "$TMP/nginx.conf" 2>&1)
+case "$out" in
+  *"syntax is ok"*) ok "nginx -t: синтаксис" ;;
+  *) no "nginx -t: синтаксис" "$out"; echo "$out"; exit 1 ;;
+esac
+case "$out" in
+  *warn*) no "nginx -t: без предупреждений" "есть warn" ;;
+  *) ok "nginx -t: без предупреждений" ;;
+esac
+
+nginx -c "$TMP/nginx.conf" 2>/dev/null
+trap 'nginx -c "$TMP/nginx.conf" -s quit 2>/dev/null' EXIT
+sleep 1
+B=http://127.0.0.1:8080
+
+# --- то, ради чего всё затевалось ---
+expect "несуществующий адрес -> 404" "404" "$(code "$B/nope-does-not-exist")"
+body=$(curl -s "$B/nope-does-not-exist")
+case "$body" in
+  *"Такой страницы нет"*) ok "404 отдаёт страницу 404.html" ;;
+  *) no "404 отдаёт страницу 404.html" "пришёл: $(printf '%s' "$body" | head -c 60)" ;;
+esac
+case "$body" in
+  *"Dmitry Zhdanov"*) no "404 не подменяется главной" "в ответе главная страница" ;;
+  *) ok "404 не подменяется главной" ;;
+esac
+expect "глубокий несуществующий адрес -> 404" "404" "$(code "$B/ru/also-not-here")"
+expect "служебный 404.html напрямую -> 404" "404" "$(code "$B/404.html")"
+
+# --- страницы и редирект ---
+expect "/ -> 200" "200" "$(code "$B/")"
+expect "/ru/ -> 200" "200" "$(code "$B/ru/")"
+expect "старый /?lang=ru -> 301" "301" "$(code "$B/?lang=ru")"
+loc=$(curl -s -o /dev/null -D - "$B/?lang=ru" | tr -d '\r' | awk -F': ' 'tolower($1)=="location"{print $2}')
+# nginx отдаёт абсолютный Location (в бою за это отвечает прокси), поэтому
+# проверяем путь, а не весь заголовок.
+case "${loc:-}" in
+  */ru/) ok "редирект ведёт на /ru/" ;;
+  *) no "редирект ведёт на /ru/" "Location: ${loc:-нет}" ;;
+esac
+expect "русская страница отдаётся на русском" "Дмитрий Жданов" \
+  "$(curl -s "$B/ru/" | grep -o 'Дмитрий Жданов' | head -1)"
+expect "русская страница: canonical на /ru/" "https://zhdanov.pw/ru/" \
+  "$(curl -s "$B/ru/" | grep -o '<link rel="canonical" href="[^"]*"' | sed 's/.*href="//;s/"//')"
+expect "CSS отдаётся и сжат" "200" "$(code "$B/assets/site.css")"
+enc=$(curl -s -o /dev/null -D - -H 'Accept-Encoding: gzip' "$B/assets/site.css" | tr -d '\r' | awk -F': ' 'tolower($1)=="content-encoding"{print $2}')
+expect "CSS жмётся gzip" "gzip" "${enc:-нет}"
+expect "og:image отдаётся" "200" "$(code "$B/assets/og.png")"
+expect "robots.txt -> 200" "200" "$(code "$B/robots.txt")"
+expect "sitemap.xml -> 200" "200" "$(code "$B/sitemap.xml")"
+
+# --- файл подтверждения Google (владелец прислал, на бою положил руками) ---
+# Без него в репозитории пересборка контейнера его бы удалила, и подтверждение
+# в Search Console слетело бы.
+expect "файл подтверждения Google -> 200" "200" "$(code "$B/googlef135278a92d1749a.html")"
+expect "токен в файле подтверждения" "google-site-verification: googlef135278a92d1749a.html" \
+  "$(curl -s "$B/googlef135278a92d1749a.html")"
+case "$(curl -s "$B/sitemap.xml")" in
+  *googlef135278a92d1749a*) no "файла подтверждения нет в sitemap" "он попал в карту" ;;
+  *) ok "файла подтверждения нет в sitemap" ;;
+esac
+
+echo
+[ $fail -eq 0 ] && echo "ИТОГ: nginx отдаёт настоящий 404, обе версии и редирект на месте" \
+                || { echo "ИТОГ: есть провалы"; exit 1; }

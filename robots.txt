@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Служебные файлы закрывать смысла нет — их и так нет в индексе,
+# но путать поисковик не стоит.
+Disallow: /404.html
+
+Sitemap: https://zhdanov.pw/sitemap.xml
