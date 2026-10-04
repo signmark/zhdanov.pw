@@ -421,7 +421,7 @@
         </div>
         <div>
           <div class="stat-value text-dim">Один</div>
-          <div class="stat-label">Разработчик на живом мультитенантном SaaS</div>
+          <div class="stat-label">Разработчик на живом мультиарендном SaaS</div>
         </div>
         <div>
           <div class="stat-value text-dim">89</div>
@@ -449,7 +449,7 @@
       <div class="space-y-4 text-text-secondary leading-relaxed">
         <p class="reveal">Веду production-платформу в одиночку: решаю, что делать, проектирую, пишу, выкатываю на свою инфраструктуру, тестирую и разбираю инциденты, когда в три часа ночи что-то легло. Границы «это не моя зона» здесь нет.</p>
         <p class="reveal">Начал с PHP в 17 лет и быстро ушёл от исполнения к организации: ТЗ, набор команды, ведение проектов от требований до сдачи. Основал и вёл собственную компанию, в 2020–2022 переквалифицировался с PHP на Python, два с половиной года делал проекты для заказчиков из США и с Ближнего Востока, а с 2025-го веду собственный SaaS целиком.</p>
-        <p class="reveal">Основной рабочий инструмент сегодня — <span class="text-accent font-medium">разработка через кодовых агентов</span>: Claude Code пишет, второй агент ревьюит, архитектуру держу я. Ключевой навык здесь не «сгенерировать код», а ловить то, что агенты ломают молча: межтенантные утечки, дыры в аутентификации, деградацию производительности.</p>
+        <p class="reveal">Основной рабочий инструмент сегодня — <span class="text-accent font-medium">разработка через кодовых агентов</span>: Claude Code пишет, второй агент ревьюит, архитектуру держу я. Ключевой навык здесь не «сгенерировать код», а ловить то, что агенты ломают молча: утечки между арендаторами, дыры в аутентификации, деградацию производительности.</p>
       </div>
 
       <div class="reveal mt-8 flex flex-wrap gap-2">
@@ -489,7 +489,7 @@
           <div class="icon-box" style="background: rgba(52,211,153,0.09);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
           <div>
             <h3 class="font-semibold mb-1.5">Безопасность, найденная на живом трафике</h3>
-            <p class="text-sm text-text-secondary leading-relaxed">На работающем продукте закрыл межтенантные утечки данных, публичный webhook без аутентификации, отсутствие защиты от брутфорса, неавторизованные WebSocket-подписки и сломанный жизненный цикл токенов. Мультитенантность значит, что каждый запрос — это граница.</p>
+            <p class="text-sm text-text-secondary leading-relaxed">На работающем продукте закрыл утечки данных между арендаторами, публичный webhook без аутентификации, отсутствие защиты от брутфорса, неавторизованные WebSocket-подписки и сломанный жизненный цикл токенов. Мультиарендность значит, что каждый запрос — это граница.</p>
           </div>
         </div>
       </div>
@@ -536,7 +536,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
         </div>
         <h3 class="font-semibold text-[17px] mb-2">Бэкенд на Python / Django</h3>
-        <p class="text-sm text-text-secondary leading-relaxed mb-4">Сервисы, API и фоновая обработка, написанные руками, а не склеенные: Django, FastAPI, Flask, воркеры на Celery, очереди на Redis. Два с половиной года такого в коммерческой разработке для США и Ближнего Востока.</p>
+        <p class="text-sm text-text-secondary leading-relaxed mb-4">Сервисы, API и фоновая обработка, написанные руками, а не склеенные: Django, FastAPI, Flask, воркеры на Celery, очереди на Redis. Два с половиной года коммерческой разработки такого уровня для США и Ближнего Востока.</p>
         <div class="flex flex-wrap gap-2">
           <span class="pill sm on-purple">Django</span><span class="pill sm on-purple">FastAPI</span><span class="pill sm">Celery</span><span class="pill sm">Redis</span>
         </div>
@@ -588,7 +588,7 @@
           <span class="pill">OpenAPI</span>
           <span class="pill">helmet</span>
           <span class="pill">rate-limit</span>
-          <span class="pill">Мультитенантность</span>
+          <span class="pill">Мультиарендность</span>
           <span class="pill">RBAC</span>
         </div>
       </div>
@@ -721,7 +721,7 @@
       <div class="tl now">
         <div class="tl-period mb-1.5">02.2025 — <span>сейчас</span></div>
         <h3 class="font-semibold text-[17px] mb-1">Технический владелец продукта и единственный разработчик — SMM Manager</h3>
-        <p class="text-sm text-text-secondary leading-relaxed mb-3">Мультитенантная SaaS-платформа управления соцсетями с AI: генерация контента, планирование, публикация в шесть сетей, сбор трендов и аналитика — веб-приложение плюс Telegram Mini App. Принял MVP, собранный агентом на Replit, и довёл его до эксплуатируемого продукта на собственной инфраструктуре.</p>
+        <p class="text-sm text-text-secondary leading-relaxed mb-3">Мультиарендная SaaS-платформа управления соцсетями с AI: генерация контента, планирование, публикация в шесть соцсетей, сбор трендов и аналитика — веб-приложение плюс Telegram Mini App. Принял MVP, собранный агентом на Replit, и довёл его до эксплуатируемого продукта на собственной инфраструктуре.</p>
         <div class="space-y-1.5 mb-3">
           <p class="bullet">Express + Directus 10 + PostgreSQL: 89 сервисов, 40+ групп API-роутов, WebSocket-уведомления, фоновые планировщики</p>
           <p class="bullet">Полный контур монетизации: тарифы с лимитами, ценообразование, жизненный цикл подписки, промокоды, партнёрские постбэки</p>
@@ -802,7 +802,7 @@
         <h3 class="font-bold text-lg mb-2">SMM Manager
           <a href="https://smm.omemo.tech" target="_blank" rel="noopener" class="link-underline text-sm font-normal font-mono ml-1">smm.omemo.tech</a>
         </h3>
-        <p class="text-sm text-text-secondary leading-relaxed mb-5">Мультитенантная платформа, которая превращает тему в опубликованный контент: AI-генерация, планирование, публикация в шесть соцсетей, сбор трендов и аналитика. Веб-приложение плюс Telegram Mini App, построено и эксплуатируется одним человеком.</p>
+        <p class="text-sm text-text-secondary leading-relaxed mb-5">Мультиарендная платформа, которая превращает тему в опубликованный контент: AI-генерация, планирование, публикация в шесть соцсетей, сбор трендов и аналитика. Веб-приложение плюс Telegram Mini App, построено и эксплуатируется одним человеком.</p>
         <div class="space-y-2 mb-6">
           <p class="bullet">AI-слой поверх семи провайдеров с цепочками фолбэков и работой через прокси</p>
           <p class="bullet">Публикация в VK, Telegram, Instagram, Facebook, Threads и YouTube — OAuth-флоу, загрузка медиа, различия платформ по форматам и лимитам</p>
@@ -819,16 +819,16 @@
           <div class="icon-box" style="background: rgba(52,211,153,0.09);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg></div>
           <span class="pill sm on-accent">Тот же продукт</span>
         </div>
-        <h3 class="font-bold text-lg mb-2">Приведение живого мультитенантного SaaS в порядок</h3>
+        <h3 class="font-bold text-lg mb-2">Приведение живого мультиарендного SaaS в порядок</h3>
         <p class="text-sm text-text-secondary leading-relaxed mb-5">Часть истории, которую стоит рассказать отдельно: AI-сгенерированный MVP выглядел готовым и не был им. Я нашёл и закрыл целый класс уязвимостей на продукте, у которого уже были пользователи, — без технологического окна.</p>
         <div class="space-y-2 mb-6">
-          <p class="bullet">Межтенантные утечки данных — один тенант мог читать записи другого</p>
+          <p class="bullet">Утечки данных между арендаторами — один арендатор мог читать записи другого</p>
           <p class="bullet">Публичный webhook без аутентификации и отсутствие защиты от брутфорса на логине</p>
           <p class="bullet">Неавторизованные WebSocket-подписки и сломанный жизненный цикл токенов и сессий</p>
           <p class="bullet">Тестовое покрытие поднято с нуля, собственный harness для route-тестов: настоящий роутер, замоканные внешние границы, прогон против реального прод-окружения</p>
         </div>
         <div class="flex flex-wrap gap-2 pt-4 border-t border-line mt-auto">
-          <span class="pill sm">Мультитенантность</span><span class="pill sm">OAuth 2.0</span><span class="pill sm">helmet</span><span class="pill sm">rate-limit</span><span class="pill sm">Vitest</span>
+          <span class="pill sm">Мультиарендность</span><span class="pill sm">OAuth 2.0</span><span class="pill sm">helmet</span><span class="pill sm">rate-limit</span><span class="pill sm">Vitest</span>
         </div>
       </div>
 
